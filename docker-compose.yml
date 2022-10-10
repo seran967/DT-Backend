@@ -1,0 +1,36 @@
+version: "3.3"
+
+services:
+  db:
+    image: keinos/sqlite3
+    volumes:
+      - ./src:/src
+
+  web:
+    container_name: test_web
+    image: ${IMAGE_APP}
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./src:/src
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  bot:
+    container_name: test_bot
+    image: ${IMAGE_APP}
+    build: .
+    command: python manage.py bot
+    volumes:
+      - ./src:/src
+    env_file:
+      - .env
+
+    depends_on:
+      - db
+
+
